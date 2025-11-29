@@ -1,0 +1,40 @@
+﻿# Exclude everything from npm package except essentials
+
+# Source files and tests
+src/
+tests/
+examples/
+
+# Documentation (except core files)
+docs/
+
+# Configuration files
+.gitignore
+.git
+.github/
+.vscode/
+tsconfig.json
+rollup.config.js
+jest.config.js
+jest.setup.js
+jest-transform-stub.js
+eslint.config.js
+
+# Development files
+node_modules/
+*.log
+*.tsbuildinfo
+.DS_Store
+Thumbs.db
+
+# Business documents (private)
+MIGRATION_GUIDE.md
+RELEASE_NOTES_*.md
+
+# Keep these files in npm package
+!README.md
+!CHANGELOG.md
+!CONTRIBUTING.md
+!LICENSE
+!package.json
+!dist/

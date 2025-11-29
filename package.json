@@ -1,0 +1,73 @@
+{
+  "name": "adelson-localization",
+  "version": "1.0.0",
+  "description": "🌍 Dynamic React localization hook with live translation updates - An alternative to i18next",
+  "main": "dist/adelson-localization.cjs.js",
+  "module": "dist/adelson-localization.esm.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "keywords": [
+    "react",
+    "localization",
+    "i18n",
+    "translation",
+    "internationalization",
+    "dynamic",
+    "hooks",
+    "adelson",
+    "multilanguage",
+    "formatting",
+    "plural",
+    "react-hook",
+    "live-updates",
+    "hot-reload",
+    "typescript"
+  ],
+  "author": {
+    "name": "Jean Junior Adelson",
+    "email": "adelsonjnjr+adelson@gmail.com"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/adelsonjnjr/adelson-localization.git"
+  },
+  "homepage": "https://github.com/adelsonjnjr/adelson-localization#readme",
+  "bugs": {
+    "url": "https://github.com/adelsonjnjr/adelson-localization/issues"
+  },
+  "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -c -w",
+    "test": "jest",
+    "lint": "eslint src/**/*.ts",
+    "prepublishOnly": "npm run build",
+    "clean": "rimraf dist"
+  },
+  "peerDependencies": {
+    "react": ">=16.8.0"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^25.0.7",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-typescript": "^11.1.5",
+    "@types/react": "^18.2.45",
+    "@typescript-eslint/eslint-plugin": "^6.15.0",
+    "@typescript-eslint/parser": "^6.15.0",
+    "eslint": "^8.56.0",
+    "jest": "^29.7.0",
+    "react": "^18.2.0",
+    "rimraf": "^5.0.5",
+    "rollup": "^4.9.1",
+    "tslib": "^2.6.2",
+    "typescript": "^5.3.3"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
