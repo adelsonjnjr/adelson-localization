@@ -1,6 +1,6 @@
 {
   "name": "adelson-localization",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "🌍 Dynamic React localization hook with live translation updates - An alternative to i18next",
   "main": "dist/adelson-localization.cjs.js",
   "module": "dist/adelson-localization.esm.js",
