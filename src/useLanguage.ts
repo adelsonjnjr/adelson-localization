@@ -50,7 +50,6 @@ const isDevelopmentMode = (): boolean => {
 export interface UseLanguageConfig {
   lang?: string;
   translationsUrl?: string;
-  emptyString?: string;
   managedLanguages?: string[];
   enableHMR?: boolean;
 }
@@ -72,7 +71,6 @@ export interface UseLanguageReturn {
  * @param {UseLanguageConfig} config - Configuration object
  * @param {string} config.lang - Initial language (default: "en")
  * @param {string} config.translationsUrl - Base URL for translation files (default: "/locales")
- * @param {string} config.emptyString - String to return when loading (default: "")
  * @param {string[]} config.managedLanguages - Array of supported languages (default: ["en", "fr", "es"])
  * @param {boolean} config.enableHMR - Enable Hot Module Replacement for translations in development (default: false)
  * 
