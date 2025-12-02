@@ -131,7 +131,6 @@ interface IUseLanguage {
 interface UseLanguageOptions {
   lang?: string;               // Default language
   translationsUrl?: string;    // CDN endpoint
-  emptyString?: string;        // Missing key fallback
   cacheDuration?: number;      // In milliseconds
   retryAttempts?: number;      // On fetch failure
 }

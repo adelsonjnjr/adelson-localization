@@ -66,7 +66,6 @@ const {
 } = useLanguage({
   lang: 'en',
   translationsUrl: 'https://mycdn.com/translations',
-  emptyString: '🚫',
   cacheDuration: 3600000 // 1 hour
 });
 ```

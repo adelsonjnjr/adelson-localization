@@ -188,7 +188,6 @@ const { ln, setLanguage } = useLanguage({
 export interface UseLanguageConfig {
   lang?: string;
   translationsUrl?: string;
-  emptyString?: string;
   managedLanguages?: string[]; // ← NEW
 }
 \\\

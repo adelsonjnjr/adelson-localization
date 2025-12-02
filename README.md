@@ -3,6 +3,7 @@
 > A lightweight, dynamic React localization hook with **live translation updates** without redeployment.
 
 [![npm version](https://img.shields.io/npm/v/adelson-localization.svg)](https://www.npmjs.com/package/adelson-localization)
+[![npm downloads](https://img.shields.io/npm/dm/adelson-localization.svg)](https://www.npmjs.com/package/adelson-localization)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg)](https://www.typescriptlang.org/)
 
@@ -107,7 +108,6 @@ function App() {
 interface UseLanguageConfig {
   lang?: string;              // Initial language (default: "en")
   translationsUrl?: string;   // Base URL for translation files (default: "/locales")
-  emptyString?: string;       // String to return when loading (default: "")
   managedLanguages?: string[]; // Array of supported languages (default: ["en", "fr", "es"])
 }
 ```
@@ -461,7 +461,7 @@ Created by **Jean Junior Adelson** as a modern, lightweight alternative to exist
 
 - 🐛 [Report Issues](https://github.com/jjadelson/adelson-localization/issues)
 - 💬 [Discussions](https://github.com/jjadelson/adelson-localization/discussions)
-- 📧 Email: your.email@example.com
+- 📧 Email: [adelsonjnjr+adelson@gmail.com](mailto:adelsonjnjr+adelson@gmail.com)
 
 ---
 

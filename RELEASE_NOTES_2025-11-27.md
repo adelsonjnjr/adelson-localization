@@ -242,7 +242,6 @@ jest.config.js
 export interface UseLanguageConfig {
   lang?: string;                    // Default: "en"
   translationsUrl?: string;         // Default: "/locales"
-  emptyString?: string;             // Default: ""
   managedLanguages?: string[];      // Default: ["en", "fr", "es"]
   enableHMR?: boolean;              // Default: false ⭐ NEW
 }
@@ -280,7 +279,6 @@ export const TestAdelsonLocalization: React.FC = () => {
     lang: "fr",
     managedLanguages: ["en", "fr", "es"],
     translationsUrl: "/locales",
-    emptyString: "...",
     enableHMR: true  // Testing HMR feature
   });
 
