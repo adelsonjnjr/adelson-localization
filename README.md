@@ -109,6 +109,7 @@ interface UseLanguageConfig {
   lang?: string;              // Initial language (default: "en")
   translationsUrl?: string;   // Base URL for translation files (default: "/locales")
   managedLanguages?: string[]; // Array of supported languages (default: ["en", "fr", "es"])
+  enableHMR?: boolean;         // Enable Hot Module Replacement in development (default: false)
 }
 ```
 
@@ -293,6 +294,39 @@ const { ln, lnPlural } = useLanguage({
 
 ## 🎨 Advanced Features
 
+### Hot Module Replacement (HMR) for Translations
+
+**Enable live translation updates in development without page refresh!**
+
+When `enableHMR` is enabled, the hook automatically polls your translation files every 2 seconds and reloads them when changes are detected. Perfect for:
+- 🔥 Rapid iteration on translations during development
+- ✏️ Real-time preview of translation changes
+- 🚀 Faster development workflow
+
+```tsx
+const { ln, loadingResource } = useLanguage({ 
+  lang: "en",
+  enableHMR: true  // ⚡ Auto-reload translations in development
+});
+
+// Translations update automatically when you edit translation files!
+```
+
+**How it works:**
+- ✅ Automatically detects development mode (Vite, Webpack, Next.js)
+- ✅ Uses `HEAD` requests to check `Last-Modified` header
+- ✅ Only reloads when files actually change
+- ✅ Minimal performance impact (2-second polling interval)
+- ✅ Automatically disabled in production
+
+**Supported environments:**
+- Vite (`import.meta.env.DEV`)
+- Webpack/CRA (`process.env.NODE_ENV`)
+- Next.js (`process.env.NEXT_PUBLIC_NODE_ENV`)
+- Localhost detection (fallback)
+
+**Note:** HMR is automatically disabled in production builds for optimal performance.
+
 ### Custom Translation URL
 
 Host your translations on a CDN or external server:
@@ -338,6 +372,343 @@ return <div>{ln("app.title")}</div>;
 ### Dynamic Translation Updates
 
 Simply update your translation files on the server, and users will receive the new translations on the next language change or page refresh. No app redeployment needed!
+
+---
+
+## 🎭 Type-Safe Mock Data in Resources
+
+One unique feature of Adelson Localization is the ability to **store typed mock data** directly in your translation files. This is perfect for rapid prototyping, client demos, and testing without needing a backend.
+
+### 🎯 Why Use Mock Data in Translations?
+
+| Use Case | Benefit |
+|----------|---------|
+| 🚀 **Rapid Prototyping** | Build UI without backend dependency |
+| 🎨 **Client Demos** | Show localized sample data (French names in FR, English names in EN) |
+| 🧪 **Stable E2E Tests** | Version-controlled test data, no API flakiness |
+| 💻 **Offline Development** | Work without internet or backend connection |
+| 🌐 **Localized Examples** | Different example data per language |
+
+### 📝 Example: Employee Dashboard
+
+**Translation file (`/public/locales/en/translation.json`):**
+
+```json
+{
+  "employees": {
+    "headers": ["id", "name", "position", "department", "age", "hireDate", "salary"],
+    "id": "ID",
+    "name": "Name",
+    "position": "Position",
+    "department": "Department",
+    "age": "Age",
+    "hireDate": "Hire Date",
+    "salary": "Salary",
+    "headerWidths": {
+      "id": 100,
+      "name": 200,
+      "position": 150,
+      "department": 230,
+      "age": 80,
+      "hireDate": 100,
+      "salary": 100
+    },
+    "list": [
+      {
+        "id": 3223,
+        "name": "John Doe",
+        "position": "Developer",
+        "department": "Information Technology",
+        "age": 30,
+        "hireDate": "2020-01-15",
+        "salary": 75000
+      },
+      {
+        "id": 3334,
+        "name": "Jane Smith",
+        "position": "Scientist",
+        "department": "Research",
+        "age": 35,
+        "hireDate": "2018-03-22",
+        "salary": 85000
+      }
+    ]
+  }
+}
+```
+
+**French version (`/public/locales/fr/translation.json`):**
+
+```json
+{
+  "employees": {
+    "headers": ["id", "name", "position", "department", "age", "hireDate", "salary"],
+    "id": "ID",
+    "name": "Nom",
+    "position": "Poste",
+    "department": "Département",
+    "age": "Âge",
+    "hireDate": "Date d'embauche",
+    "salary": "Salaire",
+    "headerWidths": {
+      "id": 100,
+      "name": 200,
+      "position": 150,
+      "department": 230,
+      "age": 80,
+      "hireDate": 100,
+      "salary": 100
+    },
+    "list": [
+      {
+        "id": 3223,
+        "name": "Jean Dupont",
+        "position": "Développeur",
+        "department": "Technologies de l'information",
+        "age": 30,
+        "hireDate": "2020-01-15",
+        "salary": 75000
+      },
+      {
+        "id": 3334,
+        "name": "Marie Curie",
+        "position": "Scientifique",
+        "department": "Recherche",
+        "age": 35,
+        "hireDate": "2018-03-22",
+        "salary": 85000
+      }
+    ]
+  }
+}
+```
+
+**React Component with TypeScript:**
+
+```tsx
+import { useLanguage } from 'adelson-localization';
+
+interface IEmployee {
+  id: number;
+  name: string;
+  position: string;
+  department: string;
+  age: number;
+  hireDate: string;
+  salary: number;
+}
+
+function EmployeeTable() {
+  const { ln, language, setLanguage, loadingResource } = useLanguage({ 
+    lang: "en",
+    managedLanguages: ["en", "fr"]
+  });
+
+  if (loadingResource) {
+    return <div>Loading...</div>;
+  }
+
+  // Type-safe data retrieval with generics
+  const employees = ln<IEmployee[]>("employees.list");
+  const headers = ln<string[]>("employees.headers");
+  const headerWidths = ln<{[key: string]: number}>("employees.headerWidths");
+
+  return (
+    <div>
+      <button onClick={() => setLanguage({ key: language.key === "en" ? "fr" : "en" })}>
+        Switch to {language.key === "en" ? "Français" : "English"}
+      </button>
+
+      <table style={{ borderCollapse: 'collapse', width: '100%' }}>
+        <thead>
+          <tr>
+            {headers.map((header) => (
+              <th 
+                key={header}
+                style={{ 
+                  width: `${headerWidths[header]}px`,
+                  border: '1px solid #ddd',
+                  padding: '8px',
+                  backgroundColor: '#f2f2f2'
+                }}
+              >
+                {ln(`employees.${header}`)}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {employees.map((emp) => (
+            <tr key={emp.id}>
+              {headers.map((header) => (
+                <td 
+                  key={header}
+                  style={{ border: '1px solid #ddd', padding: '8px' }}
+                >
+                  {emp[header as keyof IEmployee]}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+```
+
+### ✨ What Happens When You Switch Languages?
+
+When you click the button to switch from English to French:
+- ✅ **Table headers** translate (Name → Nom, Position → Poste)
+- ✅ **Employee names** change (John Doe → Jean Dupont, Jane Smith → Marie Curie)
+- ✅ **Departments** translate (Information Technology → Technologies de l'information)
+- ✅ **All in one action** - no separate API calls needed!
+
+### 🎨 More Use Cases
+
+#### Chart Configuration
+
+```json
+{
+  "dashboard": {
+    "chartConfig": {
+      "type": "bar",
+      "colors": ["#FF6384", "#36A2EB", "#FFCE56"],
+      "animations": true,
+      "datasets": [
+        { "label": "Sales", "data": [65, 59, 80, 81, 56] },
+        { "label": "Revenue", "data": [28, 48, 40, 19, 86] }
+      ]
+    }
+  }
+}
+```
+
+```tsx
+interface ChartConfig {
+  type: string;
+  colors: string[];
+  animations: boolean;
+  datasets: Array<{ label: string; data: number[] }>;
+}
+
+const config = ln<ChartConfig>("dashboard.chartConfig");
+// Full type safety and autocompletion!
+```
+
+#### Application Settings
+
+```json
+{
+  "app": {
+    "settings": {
+      "theme": "dark",
+      "notifications": {
+        "email": true,
+        "push": false,
+        "sms": true
+      },
+      "features": {
+        "chat": true,
+        "analytics": true,
+        "beta": false
+      }
+    }
+  }
+}
+```
+
+```tsx
+interface AppSettings {
+  theme: string;
+  notifications: {
+    email: boolean;
+    push: boolean;
+    sms: boolean;
+  };
+  features: {
+    chat: boolean;
+    analytics: boolean;
+    beta: boolean;
+  };
+}
+
+const settings = ln<AppSettings>("app.settings");
+```
+
+### ⚠️ Best Practices
+
+#### ✅ Good Use Cases
+- **Small datasets** (<50 items): No performance impact
+- **Prototyping**: Develop UI before backend is ready
+- **Demos**: Impress clients with localized examples
+- **Testing**: Stable, version-controlled test data
+- **Configuration**: UI settings, theme configs, feature flags
+
+#### ❌ Not Recommended For
+- **Large datasets** (>200 items): Increases bundle size significantly
+- **Production data storage**: Use a proper database instead
+- **Sensitive information**: Never store passwords, API keys, or PII
+- **Frequently changing data**: Use a real API for dynamic content
+
+### 🔄 Migration Path: From Mock to Real API
+
+One of the best aspects of this approach is the **smooth migration path**:
+
+```tsx
+// Development Phase: Using mock data
+const employees = ln<IEmployee[]>("employees.list");
+
+// Production Phase: Switch to real API
+const employees = await fetch('/api/employees').then(r => r.json());
+
+// UI rendering code stays identical! 🎉
+return (
+  <table>
+    {employees.map(emp => (
+      <tr key={emp.id}>
+        <td>{emp.name}</td>
+        <td>{emp.position}</td>
+      </tr>
+    ))}
+  </table>
+);
+```
+
+You can even use environment variables to toggle between mock and real data:
+
+```tsx
+const employees = import.meta.env.DEV 
+  ? ln<IEmployee[]>("employees.list")  // Mock data in development
+  : await fetchEmployees();             // Real API in production
+```
+
+### 📊 Performance Considerations
+
+| Dataset Size | Impact | Recommendation |
+|-------------|--------|----------------|
+| **Small** (<50 items) | ✅ Negligible | Perfect for mock data |
+| **Medium** (50-200 items) | ⚠️ +5-20KB bundle size | Acceptable for demos |
+| **Large** (>200 items) | ❌ Significant increase | Use real API instead |
+
+**Note:** Currently, `adelson-localization` loads translations from `translation.json` only. For large datasets, use a separate API call:
+
+```tsx
+// Approach for large datasets outside translation files
+const largeData = await fetch('/api/large-dataset').then(r => r.json());
+```
+
+### 🎯 Summary
+
+Mock data in translation files provides:
+- ✅ **Type safety** with TypeScript generics (`ln<T>()`)
+- ✅ **Localized examples** (different data per language)
+- ✅ **Zero backend dependency** during development
+- ✅ **Version control** for test data
+- ✅ **Easy migration** to real APIs later
+
+This unique feature makes Adelson Localization more than just an i18n library—it's also a **type-safe mock data provider** for rapid development! 🚀
 
 ---
 

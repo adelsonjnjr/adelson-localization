@@ -227,8 +227,6 @@ export const useLanguage = ({
       return;
     }
 
-    console.log('🔄 [Adelson Localization] HMR activé pour les traductions');
-
     let intervalId: NodeJS.Timeout;
     let lastModified: string | null = null;
 

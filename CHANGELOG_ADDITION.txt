@@ -1,0 +1,13 @@
+﻿## [Unreleased]
+
+### Planned for v1.1.0
+
+#### �� New Features
+- **Custom resource file support**: Add esourceFile parameter to useLanguage() config to load from files other than 	ranslation.json
+  - Enables: { resourceFile: "app-strings.json" }
+  - Use cases: Module-based translations, A/B testing, multiple resource sets
+  - Maintains backward compatibility (default: 	ranslation.json)
+
+### Known Limitations (Current Version)
+- **Fixed resource filename**: Currently hardcoded to 	ranslation.json. Custom filenames will be supported in v1.1.0.
+

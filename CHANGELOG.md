@@ -1,4 +1,4 @@
-﻿# Changelog
+# Changelog
 
 All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
@@ -6,9 +6,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Planned for v1.1.0
+
+#### \ud83d\udce6 New Features
+- **Custom resource file support**: Add esourceFile parameter to useLanguage() config to load from files other than 	ranslation.json`r
+  - Enables: { resourceFile: "app-strings.json" }`r
+  - Use cases: Module-based translations, A/B testing, multiple resource sets
+  - Maintains backward compatibility (default: 	ranslation.json)
+
+### Known Limitations (Current Version)
+- **Fixed resource filename**: Currently hardcoded to 	ranslation.json. Custom filenames will be supported in v1.1.0.
+
+
 ### Added - 2025-11-27
 
-#### 🔥 Hot Module Replacement (HMR) System
+#### ?? Hot Module Replacement (HMR) System
 - **`enableHMR` parameter**: New optional configuration to enable automatic translation reloading in development mode
 - **`isDevelopmentMode()` function**: Bundler-agnostic environment detection
   - Supports Vite (`import.meta.env.DEV`)
@@ -19,12 +31,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **`Last-Modified` header tracking**: Only reloads when files actually change
 - **Console logging**: Informative messages for HMR activation and reload events
 
-#### 🔧 Build System Improvements
+#### ?? Build System Improvements
 - **Updated `@rollup/plugin-terser`**: Replaced deprecated `rollup-plugin-terser` v7.0.2 with `@rollup/plugin-terser` v0.4.4
   - Fixed peer dependency conflict with Rollup v4
   - Updated import statement in `rollup.config.js`
 
-#### 🛡️ Stability Enhancements
+#### ??? Stability Enhancements
 - **`useMemo` for managedLanguages**: Stabilized array dependency using `managedLanguages.join(",")`
 - **`useMemo` for translationsUrl**: Stabilized URL dependency
 - **`useCallback` for loadTranslations**: Extracted translation loading logic to reusable callback
@@ -32,27 +44,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed - 2025-11-27
 
-#### 🔄 Hook Architecture Refactoring
+#### ?? Hook Architecture Refactoring
 - **Extracted `loadTranslations` function**: Moved from inline `useEffect` to `useCallback` for reusability
 - **Split useEffect responsibilities**: 
   - One `useEffect` for initial load and language changes
   - One `useEffect` for HMR polling (only in dev mode with `enableHMR: true`)
 - **Enhanced fetch options**: Added `cache: enableHMR ? 'no-cache' : 'default'` to prevent browser caching in dev mode
 
-#### 📝 Documentation Updates
+#### ?? Documentation Updates
 - Updated `UseLanguageConfig` interface with `enableHMR?: boolean`
 - Enhanced JSDoc comments to document HMR feature
 - Improved console warning messages with `[Adelson Localization]` prefix for better log filtering
 
 ### Fixed - 2025-11-27
 
-#### 🐛 Critical Bug Fixes
+#### ?? Critical Bug Fixes
 - **Infinite render loop**: Fixed issue where `managedLanguages` array created new reference on every render
   - Root cause: Array passed directly in component props
   - Solution: `useMemo` with content-based comparison (`join(",")`)
 - **Rollup terser compatibility**: Fixed build errors with Rollup v4 by upgrading terser plugin
 
-#### 🔒 Security & Packaging
+#### ?? Security & Packaging
 - **`.npmignore` configuration**: Prevents sensitive files from being published
   - Excludes: `src/`, `tests/`, `examples/`, `docs/`, config files
   - Includes: `dist/`, `README.md`, `CHANGELOG.md`, `LICENSE`
@@ -137,12 +149,13 @@ l\) plural rules
 - MIT License
 
 ### Features
-- 🌍 Multi-language support (fr, en, es)
-- 🎯 Dynamic placeholder formatting
-- 🔄 Live translation updates
-- 📦 Lightweight bundle (~5KB minified)
-- 🚀 Zero configuration setup
-- 💪 TypeScript-first approach
-- ⚡ React hooks-based API
+- ?? Multi-language support (fr, en, es)
+- ?? Dynamic placeholder formatting
+- ?? Live translation updates
+- ?? Lightweight bundle (~5KB minified)
+- ?? Zero configuration setup
+- ?? TypeScript-first approach
+- ? React hooks-based API
 
 [1.0.0]: https://github.com/jjadelson/adelson-localization/releases/tag/v1.0.0
+
