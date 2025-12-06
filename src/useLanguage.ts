@@ -55,11 +55,94 @@ export interface UseLanguageConfig {
 }
 
 export interface UseLanguageReturn {
+  /** Raw translation data loaded from the translation file */
   resource: any;
+  
+  /**
+   * Localization function to retrieve translated strings.
+   * 
+   * Supports dot notation for nested keys and dynamic formatting with indexed `{{}}` or named `{{name}}` placeholders.
+   * 
+   * @template T - The expected return type, defaults to string.
+   * @param key - The key representing the string to be localized (supports dot notation for nested keys).
+   * @param args - Additional arguments for formatting the string. Can be:
+   *   - Indexed values: `ln("key", value1, value2)`
+   *   - Named object: `ln("key", { name: "John" })`
+   *   - Mixed: `ln("key", value1, { name: "John" })`
+   *   - With default: `ln("key", { defaultTxt: "Fallback" })`
+   * @returns The localized string or the value corresponding to the key.
+   * 
+   * @example
+   * ```tsx
+   * // Simple translation
+   * const title = ln("app.title");
+   * 
+   * // Indexed placeholders
+   * const greeting = ln("greetings.hello", "John");
+   * // "Hello {{}}!" → "Hello John!"
+   * 
+   * // Named placeholders
+   * const profile = ln("profile.info", { firstName: "John", lastName: "Doe" });
+   * // "{{firstName}} {{lastName}}" → "John Doe"
+   * 
+   * // TypeScript generics for non-string types
+   * const count = ln<number>("config.maxItems");
+   * const features = ln<string[]>("config.features");
+   * 
+   * // With default fallback
+   * const text = ln("missing.key", { defaultTxt: "Default text" });
+   * ```
+   */
   ln: <T = string>(key: string, ...args: any[]) => T;
+  
+  /**
+   * Localization function with plural support.
+   * 
+   * Automatically selects singular or plural form based on the count and language-specific plural rules.
+   * 
+   * @template T - The expected return type, defaults to string.
+   * @param key - The base key (without .singular/.plural suffix).
+   * @param count - The count to determine singular/plural form.
+   * @param args - Additional arguments for formatting the string.
+   * @returns The localized string in singular or plural form.
+   * 
+   * @example
+   * ```tsx
+   * // translation.json:
+   * // {
+   * //   "messages": {
+   * //     "notification": {
+   * //       "singular": "You have {{}} new message",
+   * //       "plural": "You have {{}} new messages"
+   * //     }
+   * //   }
+   * // }
+   * 
+   * const msg1 = lnPlural("messages.notification", 1);
+   * // Output: "You have 1 new message"
+   * 
+   * const msg5 = lnPlural("messages.notification", 5);
+   * // Output: "You have 5 new messages"
+   * ```
+   */
   lnPlural: <T = string>(key: string, count: number, ...args: any[]) => T;
+  
+  /** Current language state */
   language: { key: string };
+  
+  /**
+   * Function to change the current language.
+   * 
+   * @param lang - Object containing the language key.
+   * 
+   * @example
+   * ```tsx
+   * setLanguage({ key: "fr" });
+   * ```
+   */
   setLanguage: (lang: { key: string }) => void;
+  
+  /** Loading state for translation resources */
   loadingResource: boolean;
 }
 
@@ -100,22 +183,16 @@ export const useLanguage = ({
   enableHMR = false
 }: UseLanguageConfig): UseLanguageReturn => {
   const [data, setData] = useState<any>();
-  const [language, setLanguage] = useState({ key: lang });
+  const [language, setLanguage] = useState<{
+    /** Current language key */
+    key: string
+   }>({ key: lang });
   const [loadingResource, setLoadingResource] = useState(true);
   const emptyString = "";
   const stableTranslationUrl = useMemo(() => translationsUrl, [translationsUrl]);
   const stableManagedLanguages = useMemo(() => managedLanguages, [managedLanguages.join(",")]);
 
-  /**
-   * Localization function to retrieve translated strings.
-   * @template T The expected return type, defaults to string.
-   * @param {string} key The key representing the string to be localized, supports dot notation for nested keys.
-   * @param {...any[]} args Additional arguments for formatting the string.
-   * @returns {T} The localized string or the value corresponding to the key.
-   * @example
-   * const greeting = ln("greetings.hello", "John");
-   * console.log(greeting); // Output: "Hello, John" (assuming the translation exists)
-   */
+  // Implementation of ln - see UseLanguageReturn interface for full documentation
   const ln = useCallback(
     <T = string>(key: string, ...args: any[]): T => {
       let splitKey = key.split(".");
@@ -150,21 +227,7 @@ export const useLanguage = ({
     [data]
   );
 
-  /**
-   * Localization function with plural support.
-   * @template T The expected return type, defaults to string.
-   * @param {string} key The key representing the base string to be localized (without .singular/.plural suffix).
-   * @param {number} count The count to determine singular/plural form.
-   * @param {...any[]} args Additional arguments for formatting the string.
-   * @returns {T} The localized string in singular or plural form.
-   * @example
-   * // translation.json: { "messages": { "notification": { "singular": "You have {{}} new message", "plural": "You have {{}} new messages" } } }
-   * const msg1 = lnPlural("messages.notification", 1);
-   * console.log(msg1); // Output: "You have 1 new message"
-   * 
-   * const msg5 = lnPlural("messages.notification", 5);
-   * console.log(msg5); // Output: "You have 5 new messages"
-   */
+  // Implementation of lnPlural - see UseLanguageReturn interface for full documentation
   const lnPlural = useCallback(
     <T = string>(key: string, count: number, ...args: any[]): T => {
       // Utiliser la règle de pluriel appropriée pour la langue actuelle
