@@ -207,7 +207,7 @@ export const useLanguage = ({
       let index = 0;
       let keyPart = splitKey[index].trimStart().trimEnd();
       if (keyPart === "") return "unknown" as T;
-      if (!data?.hasOwnProperty(keyPart)) return key as T;
+      if (!data?.hasOwnProperty(keyPart)) return defaultTxt ? `${defaultTxt}`.format(...args) as T : key as T;
       let value = data?.[keyPart];
       
       try {
@@ -219,7 +219,7 @@ export const useLanguage = ({
           value = value?.[keyPart];
         }
       } catch (e: any) {
-        value = defaultTxt ? defaultTxt : key;
+        value = defaultTxt ? `${defaultTxt}`.format(...args) as T : key as T;
       }
       
       return typeof value === "string" ? `${value}`.format(...args) as T : value;
