@@ -6,16 +6,55 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-### Planned for v1.1.0
+## [1.1.0] - 2025-12-13
 
-#### \ud83d\udce6 New Features
-- **Custom resource file support**: Add esourceFile parameter to useLanguage() config to load from files other than 	ranslation.json`r
-  - Enables: { resourceFile: "app-strings.json" }`r
-  - Use cases: Module-based translations, A/B testing, multiple resource sets
-  - Maintains backward compatibility (default: 	ranslation.json)
+### 🎉 Added
 
-### Known Limitations (Current Version)
-- **Fixed resource filename**: Currently hardcoded to 	ranslation.json. Custom filenames will be supported in v1.1.0.
+#### 📁 Multiple Resource Files Support
+- **`resourceFiles` parameter**: Load and merge multiple translation files
+  - Example: `{ resourceFiles: ["common.json", "auth.json", "dashboard.json"] }`
+  - Files are loaded in parallel for optimal performance
+  - Deep merge combines all files into a single resource object
+  - Use cases: Module-based translations, team collaboration, better organization
+  - Maintains backward compatibility (default: `["translation.json"]`)
+
+#### 🔧 Exported Utility Functions
+- **`deepMerge(...objects)`**: Recursively merge multiple objects
+  - Later objects override earlier ones
+  - Perfect for merging configuration or translation sources
+  - Used internally by `resourceFiles` feature
+- **`strictDeepMerge(target, ...sources)`**: Strict merge that only updates existing keys
+  - Ignores new keys from sources
+  - Useful for partial updates with schema validation
+  - Mutates and returns the target object
+
+#### 🧪 Comprehensive Test Suite
+- **64 total tests** across 3 test suites
+  - 19 tests for `objectHelpers` (deepMerge, strictDeepMerge)
+  - 40 tests for `stringHelpers` (format, capitalize, etc.)
+  - 5 tests for `resourceFiles` feature
+- All tests passing with 100% coverage of new features
+
+#### 📝 Enhanced Documentation
+- Added detailed section on multiple resource files
+- Added utility functions API reference
+- Added "What's New in v1.1.0" section
+- Updated `UseLanguageConfig` interface documentation
+
+### 🔧 Changed
+- **Internal architecture**: Refactored translation loading to support multiple files
+- **Fetch logic**: Now uses `Promise.all()` for parallel file loading
+- **Merge strategy**: Implements deep merge for combining multiple translation sources
+
+### 🛠️ Technical Improvements
+- Zero new dependencies (keeps package lightweight)
+- Optimized bundle size (still ~5KB minified)
+- Full TypeScript support for new features
+- Backward compatible with v1.0.x
+
+### 🔒 Security
+- Fixed high severity vulnerability in `glob` dependency
+- Updated to latest secure versions of dev dependencies
 
 
 ### Added - 2025-11-27
