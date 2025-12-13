@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 
 // Initialize string helpers
 import { stringHelpExtensions } from "./stringHelpers";
+import { deepMerge } from "./objectHelpers";
 stringHelpExtensions();
 
 // Règles de pluriel par langue
@@ -52,6 +53,7 @@ export interface UseLanguageConfig {
   translationsUrl?: string;
   managedLanguages?: string[];
   enableHMR?: boolean;
+  resourceFiles?: string[];
 }
 
 export interface UseLanguageReturn {
@@ -156,6 +158,7 @@ export interface UseLanguageReturn {
  * @param {string} config.translationsUrl - Base URL for translation files (default: "/locales")
  * @param {string[]} config.managedLanguages - Array of supported languages (default: ["en", "fr", "es"])
  * @param {boolean} config.enableHMR - Enable Hot Module Replacement for translations in development (default: false)
+ * @param {string[]} config.resourceFiles - Array of translation file names to load and merge (default: ["translation.json"])
  * 
  * @returns {UseLanguageReturn} Object containing localization functions and state
  * 
@@ -180,7 +183,8 @@ export const useLanguage = ({
   lang = "en", 
   translationsUrl = "/locales",
   managedLanguages = ["en", "fr", "es"],
-  enableHMR = false
+  enableHMR = false,
+  resourceFiles = ["translation.json"]
 }: UseLanguageConfig): UseLanguageReturn => {
   const [data, setData] = useState<any>();
   const [language, setLanguage] = useState<{
@@ -191,6 +195,7 @@ export const useLanguage = ({
   const emptyString = "";
   const stableTranslationUrl = useMemo(() => translationsUrl, [translationsUrl]);
   const stableManagedLanguages = useMemo(() => managedLanguages, [managedLanguages.join(",")]);
+  const stableResourceFiles = useMemo(() => resourceFiles, [resourceFiles.join(",")]);
 
   // Implementation of ln - see UseLanguageReturn interface for full documentation
   const ln = useCallback(
@@ -255,27 +260,36 @@ export const useLanguage = ({
     }
     
     try {
-      const response = await fetch(`${stableTranslationUrl}/${language.key}/translation.json`, {
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-        cache: enableHMR ? 'no-cache' : 'default'
-      });
+      // Charger tous les fichiers de ressources en parallèle
+      const filePromises = stableResourceFiles.map(file => 
+        fetch(`${stableTranslationUrl}/${language.key}/${file}`, {
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          cache: enableHMR ? 'no-cache' : 'default'
+        }).then(response => {
+          if (!response.ok) {
+            throw new Error(`Failed to load ${file} for language: ${language.key}`);
+          }
+          return response.json();
+        })
+      );
       
-      if (!response.ok) {
-        throw new Error(`Failed to load translations for language: ${language.key}`);
-      }
+      // Attendre que tous les fichiers soient chargés
+      const results = await Promise.all(filePromises);
       
-      const translationData = await response.json();
-      setData(translationData);
+      // Fusionner tous les fichiers de traduction
+      const mergedData = deepMerge({}, ...results);
+      
+      setData(mergedData);
     } catch (error) {
       console.error("[Adelson Localization] Error loading translations:", error);
       setData({});
     } finally {
       setLoadingResource(false);
     }
-  }, [language.key, stableTranslationUrl, stableManagedLanguages, enableHMR]);
+  }, [language.key, stableTranslationUrl, stableManagedLanguages, enableHMR, stableResourceFiles]);
 
   useEffect(() => {
     loadTranslations();
