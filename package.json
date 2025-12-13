@@ -1,6 +1,6 @@
 {
   "name": "adelson-localization",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "🌍 Dynamic React localization hook with live translation updates - An alternative to i18next",
   "main": "dist/adelson-localization.cjs.js",
   "module": "dist/adelson-localization.esm.js",
@@ -44,6 +44,11 @@
     "build": "rollup -c",
     "dev": "rollup -c -w",
     "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "test:helpers": "jest tests/objectHelpers.test.ts tests/stringHelpers.test.ts",
+    "test:object": "jest tests/objectHelpers.test.ts",
+    "test:string": "jest tests/stringHelpers.test.ts",
     "lint": "eslint src/**/*.ts",
     "prepublishOnly": "npm run build",
     "clean": "rimraf dist"
@@ -56,6 +61,7 @@
     "@rollup/plugin-node-resolve": "^15.2.3",
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^11.1.5",
+    "@types/jest": "^30.0.0",
     "@types/react": "^18.2.45",
     "@typescript-eslint/eslint-plugin": "^6.15.0",
     "@typescript-eslint/parser": "^6.15.0",
@@ -64,6 +70,7 @@
     "react": "^18.2.0",
     "rimraf": "^5.0.5",
     "rollup": "^4.9.1",
+    "ts-jest": "^29.4.6",
     "tslib": "^2.6.2",
     "typescript": "^5.3.3"
   },
