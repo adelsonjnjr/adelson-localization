@@ -37,6 +37,18 @@ Update your translation files on the server, and users get the latest content **
 
 ---
 
+## 🎮 Live Demo
+
+Try **adelson-localization** instantly in your browser:
+
+[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/edit/vitejs-vite-chbhmn8l)
+
+**No installation required!** Fork, modify, and test in seconds.
+
+[📺 See all demos and examples →](./DEMO.md)
+
+---
+
 ## 📦 Installation
 
 ```bash
